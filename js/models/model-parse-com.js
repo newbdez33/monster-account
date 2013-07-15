@@ -1,35 +1,22 @@
-Parse.initialize("3lJfd4T87rxDvs34BJcXEjO7tbJLAyQ4cN3XSwCv", "WInG2A7UMnpzeCH51SXB0pecsWWtmOKvjXyolLUm");
+Parse.initialize("oMA4LcKxl6pHu7753B4F5bPQ4M7nMORtyJerbT4J", "hPfpey5oqDR9A3ef9vi06l7A390tp5nMhDT2pkug");
 
-app.Employee = Parse.Object.extend({
+app.Month = Parse.Object.extend({
 
-    className: "employees",
+    className: "month",
 
     initialize: function() {
-        this.reports = new app.ReportsCollection();
-        this.reports.query = new Parse.Query(app.Employee).equalTo("managerId", this.id);
+        //
+    },
+
+    defaults: function() {
+        return {
+            date : moment().format("YYYY-MM"),
+            spend : 0
+        }
     }
 
 });
 
-app.EmployeeCollection = Parse.Collection.extend(({
-
-    model: app.Employee,
-
-    fetch: function(options) {
-        console.log('custom fetch');
-        if (options.data && options.data.name) {
-            var firstNameQuery = new Parse.Query(app.Employee).contains("firstName", options.data.name);
-            var lastNameQuery = new Parse.Query(app.Employee).contains("lastName", options.data.name);
-            this.query = Parse.Query.or(firstNameQuery, lastNameQuery);
-        }
-        Parse.Collection.prototype.fetch.apply(this, arguments);
-
-    }
-
-}));
-
-app.ReportsCollection = Parse.Collection.extend(({
-
-    model: app.Employee
-
+app.MonthCollection = Parse.Collection.extend(({
+    model: app.Month,
 }));

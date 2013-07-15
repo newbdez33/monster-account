@@ -22,25 +22,44 @@ app.Router = Backbone.Router.extend({
     },
 
     home: function () {
+
         console.log("Route: HOME");
         if (!app.layoutView) {
+
             app.layoutView = new app.LayoutView();
+
+            app.monthes = new app.MonthCollection();
+            app.monthes.fetch({
+                success: function(collection) {
+                    console.log("Retrieving collection success");
+                },
+                error: function(collection, err) {
+                    console.log("Retrieving collection error");
+                }
+            });
+
         }else {
             console.log("resusing LayoutView");
             app.layoutView.delegateEvents();
         }
-        console.log(app.layoutView);
+        
         app.layoutView.selectMenuItem('home-menu');
+
+        app.tabbedContainer = new app.TabbedContainer();
+        app.layoutView.$("#content").append(app.tabbedContainer.render().el);
+        
     },
 
     chart: function(type) {
         console.log("Route: CHART("+type+")");
         app.layoutView.selectMenuItem('chart-menu');
+        app.layoutView.$("#content").html('');
     },
 
     settings: function() {
         console.log("Route: SETTINGS");
         app.layoutView.selectMenuItem('settings-menu');
+        app.layoutView.$("#content").html('');
     }
 
 });

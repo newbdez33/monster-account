@@ -1,8 +1,8 @@
 body {
     font-family: source-sans-pro, sans-serif;
     font-size: 15px;
-    /*padding-top: 60px;*/
-    /*padding-bottom: 40px;*/
+    padding-top: 60px;
+    padding-bottom: 40px;
 }
 
 .dropdown-menu {
@@ -24,4 +24,8 @@ div.container a.brand {
     background: url("../images/ma-logo.png") no-repeat scroll 0 10px transparent;
     margin-left: 0;
     padding: 8px 20px 12px 40px;
+}
+
+.nav-tabs .badge-important {
+    margin-left: 1px;
 }

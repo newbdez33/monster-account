@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>三文鱼记帐</title>
+    <title>Monster Account v2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -58,14 +58,26 @@
     </div> <!-- /container -->
 </div>
 
+<!-- TEMPLATES -->
+<script type="text/template" id="tabbed-container-template">
+<ul class="nav nav-tabs">
+    <% _.each(tabs, function(tab) { %>
+    <li><a data-toggle="tab"><%= moment(tab.date, "YYYY-MM").format("MMMM") %><span class="badge badge-important"><%= tab.spend %></span></a></li>
+    <% }); %>
+</ul>
+</script>
+
+<!-- IMPORT -->
 <script src="lib/jquery-1.9.1.min.js"></script>
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
+<script src="lib/moment.min.js"></script>
 <script src="bootstrap/js/bootstrap.js"></script>
 
 <script src="js/app.js"></script>
 <script src="js/views/layout.js"></script>
-<script src="lib/parse-1.2.2.min.js"></script>
+<script src="js/views/tabbed-container.js"></script>
+<script src="lib/parse-1.2.8.min.js"></script>
 <script src="js/models/model-parse-com.js"></script>
 
 </body>
