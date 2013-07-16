@@ -4,10 +4,6 @@ app.Month = Parse.Object.extend({
 
     className: "month",
 
-    initialize: function() {
-        //
-    },
-
     defaults: function() {
         return {
             date : moment().format("YYYY-MM"),
@@ -20,3 +16,19 @@ app.Month = Parse.Object.extend({
 app.MonthCollection = Parse.Collection.extend(({
     model: app.Month,
 }));
+
+app.Day = Parse.Object.extend({
+
+    className: "day",
+
+    initialize: function() {
+        //
+    },
+
+    defaults: function() {
+        return {
+            date : moment().format("YYYY-MM-DD"),
+            items : []
+        }
+    }
+});

@@ -7,6 +7,25 @@
 var app = {
     views: {},
     models: {},
+
+    checkAndFixThisMonthTab: function () {
+
+        var current_month = moment().format("YYYY-MM");
+
+        if (app.monthes.length>0) {
+            //get last item and check if it is current month
+            var idx = app.monthes.length-1;
+            var last = app.monthes.at(idx);
+            if (current_month==last.get("date")) {
+                return;
+            }
+        }
+
+        //create a new (current)month model instance and add to collection
+        app.monthes.create({date:current_month});
+        console.log("Current Month Tab created.");
+
+    },
 };
 
 app.Router = Backbone.Router.extend({
@@ -32,9 +51,10 @@ app.Router = Backbone.Router.extend({
             app.monthes.fetch({
                 success: function(collection) {
                     console.log("Retrieving collection success");
+                    app.checkAndFixThisMonthTab();  //check if this month is existing
                 },
                 error: function(collection, err) {
-                    console.log("Retrieving collection error");
+                    console.warn("Retrieving collection error");
                 }
             });
 
@@ -42,7 +62,7 @@ app.Router = Backbone.Router.extend({
             console.log("resusing LayoutView");
             app.layoutView.delegateEvents();
         }
-        
+
         app.layoutView.selectMenuItem('home-menu');
 
         app.tabbedContainer = new app.TabbedContainer();
