@@ -13,22 +13,36 @@ app.Month = Parse.Object.extend({
 
 });
 
-app.MonthCollection = Parse.Collection.extend(({
+app.MonthCollection = Parse.Collection.extend({
     model: app.Month,
-}));
 
-app.Day = Parse.Object.extend({
+    fetch: function (options) {
+        //TODO localstorage cache (lastUpdated)
+        this.query = new Parse.Query(app.Month).ascending("date");
+        Parse.Collection.prototype.fetch.apply(this, arguments);
+    }
+});
 
-    className: "day",
+app.Spend = Parse.Object.extend({
 
-    initialize: function() {
-        //
-    },
+    className: "spend",
 
     defaults: function() {
         return {
             date : moment().format("YYYY-MM-DD"),
-            items : []
+            category : "",
+            memo : "",
+            spend : 0
         }
+    }
+});
+
+app.SpendCollection = Parse.Collection.extend({
+    model: app.Spend,
+    fetch: function (options) {
+        //TODO localstorage cache (lastUpdated)
+        console.log("fetch spend collection with month:"+options.month)
+        this.query = new Parse.Query(app.Spend).startsWith("date", options.month).ascending("date");
+        Parse.Collection.prototype.fetch.apply(this, arguments);
     }
 });

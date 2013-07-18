@@ -62,9 +62,22 @@
 <script type="text/template" id="tabbed-container-template">
 <ul class="nav nav-tabs">
     <% _.each(tabs, function(tab) { %>
-    <li><a data-toggle="tab"><%= moment(tab.date, "YYYY-MM").format("MMMM") %><span class="badge badge-important"><%= tab.spend %></span></a></li>
+    <li date="<%= tab.date %>" class="tab"><a><%= moment(tab.date, "YYYY-MM").format("MMMM") %><span class="badge badge-important"><%= tab.spend %></span></a></li>
     <% }); %>
 </ul>
+<div class="container-fluid show-grid" id="tab-content"></div>
+</script>
+
+<script type="text/template" id="day-template">
+    <p class="text-left">
+        <a href="#" role="button" class="addDailySpent" dt="<%= date.format('YYYY-MM-DD') %>"><i class="icon-plus-sign"> </i></a>
+    </p>
+    <h2 class="text-center" style="width:100%; line-height: 10px;"><%= date.format('D') %><span class="superscript"><%= date.format('ddd') %></span> <span class="badge badge-important"><%= day_spend %></span></h2>
+    <ul class="text-left spend-memo-list" id="spend-list"></ul>
+</script>
+
+<script type="text/template" id="spend-template">
+    <span><small><%= memo %></small>, <strong>-<%= spend %></strong></span>
 </script>
 
 <!-- IMPORT -->
@@ -76,6 +89,8 @@
 
 <script src="js/app.js"></script>
 <script src="js/views/layout.js"></script>
+<script src="js/views/spend.js"></script>
+<script src="js/views/day.js"></script>
 <script src="js/views/tabbed-container.js"></script>
 <script src="lib/parse-1.2.8.min.js"></script>
 <script src="js/models/model-parse-com.js"></script>

@@ -50,11 +50,10 @@ app.Router = Backbone.Router.extend({
             app.monthes = new app.MonthCollection();
             app.monthes.fetch({
                 success: function(collection) {
-                    console.log("Retrieving collection success");
                     app.checkAndFixThisMonthTab();  //check if this month is existing
                 },
                 error: function(collection, err) {
-                    console.warn("Retrieving collection error");
+                    console.warn("Retrieving tab collection error");
                 }
             });
 

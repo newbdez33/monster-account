@@ -29,3 +29,108 @@ div.container a.brand {
 .nav-tabs .badge-important {
     margin-left: 1px;
 }
+
+.superscript { 
+   vertical-align: super;
+   position: relative; top: -0.8em;
+   font-size: 9px; 
+ }
+
+
+.show-grid [class*="span"] {
+    background-color: #F6F6F6;
+    border-radius: 5px 5px 5px 5px;
+    line-height: 40px;
+    min-width: 140px;
+    min-height: 145px;
+    max-height: 145px;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    overflow: hidden;
+}
+.show-grid [class*="span"]:hover {
+    background-color: #DDDDDD;
+    /* background-color: #B8B9BB; scheme choice */
+}
+
+.spanx {
+    background-color: #F6F6F6;
+    border-radius: 5px 5px 5px 5px;
+    line-height: 40px;
+    min-width: 140px;
+    min-height: 145px;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    overflow: auto;
+    border-width: 1px;
+    border-color: #B8B9BB;
+    border-style: dashed;
+    margin-left: 0px !important;
+}
+
+.show-grid [class="spanx"] {
+    margin-left: 0px;
+}
+
+.span2 p {
+  margin-left:10px;
+  margin-right:10px;
+}
+
+.inputerror {
+  background-color: #ffd8d9 !important;
+}
+
+.spend-memo-list-item a {
+  color: #333333;
+  padding-left:5px;
+  padding-right:5px;
+}
+
+.spend-memo-list-item a:hover {
+  color: #333333;
+  background-color: #B8B9BB;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  padding-left:5px;
+  padding-right:5px;
+  text-decoration: none;
+}
+
+#selectCategory li, #selectCategory a {
+  line-height: 10px;
+  font-size: 10px;
+  padding-top:1px;
+}
+
+li.tab {
+    cursor: pointer;
+}
+
+li.spend-memo-list-item {
+    margin-left: 5px;
+}
+
+li.spend-memo-list-item span {
+    cursor: pointer;
+    color: #333333;
+    position: relative; left: 0px;
+    padding-left:5px;
+    padding-right:5px;
+}
+
+li.spend-memo-list-item span:hover {
+    cursor: pointer;
+    color: #333333;
+    position: relative; left: 0px;
+    padding-left:5px;
+    padding-right:5px;
+    background-color: #B8B9BB;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    text-decoration: none;
+}
