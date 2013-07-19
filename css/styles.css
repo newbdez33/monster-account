@@ -134,3 +134,11 @@ li.spend-memo-list-item span:hover {
     border-radius:5px;
     text-decoration: none;
 }
+
+input.error {
+  background-color: rgb(252, 248, 227);
+}
+
+label.error {
+  float:right;
+}

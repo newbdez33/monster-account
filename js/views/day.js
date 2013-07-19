@@ -4,9 +4,13 @@ app.DayView = Backbone.View.extend({
 
     template: _.template($('#day-template').html()),
 
-    initialize: function (args) {
-    	this.date = args.date;
-    	this.items = args.collection;
+    events: {
+        "click .addDailySpent" : "addDailySpent",
+    },
+
+    initialize: function (options) {
+    	this.date = options.date;
+    	this.items = options.items;
     },
 
     render: function () {
@@ -25,6 +29,11 @@ app.DayView = Backbone.View.extend({
     		ul_element.append(view.render().el);
     	});
     	return this;
+    },
+
+    addDailySpent: function () {
+        var dialog = new app.SpendDialogView({date:this.date});
+        dialog.presentDailySpendModelDialog(app.dialogModeAdd);
     },
 
 });

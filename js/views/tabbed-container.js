@@ -84,7 +84,7 @@ app.TabbedContainer = Backbone.View.extend({
                 });
             }
             //console.log(data);
-            var dayView = new app.DayView({collection:data, date: next_day});
+            var dayView = new app.DayView({items:data, date:next_day});
             this.tab_content.append(dayView.render().el);
         };
     },

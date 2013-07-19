@@ -8,6 +8,10 @@ var app = {
     views: {},
     models: {},
 
+    /* static variables */
+    dialogModeAdd: "dialogModeAdd",
+    dialogModeEdit: "dialogModeEdit",
+
     checkAndFixThisMonthTab: function () {
 
         var current_month = moment().format("YYYY-MM");
