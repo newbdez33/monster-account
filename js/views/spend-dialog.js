@@ -9,6 +9,7 @@ app.SpendDialogView = Backbone.View.extend({
     initialize: function (options) {
 
     	this.date = options.date;
+    	this.dayView = options.dayView;
 
     	this.deleteButton = this.$("#deleteSpendButton");
     	this.titleLabel = this.$("#spend-dialog-title");
@@ -66,8 +67,29 @@ app.SpendDialogView = Backbone.View.extend({
     		}
     	});
     	if(this.spendForm.valid()) {
-    		var form_values = this.spendForm.serializeArray();
-    		console.log(form_values);
+
+    		var spend = new app.Spend();
+    		_.each(this.spendForm.serializeArray(), function(item){
+    			if(item.name=="spend") item.value = parseFloat(item.value);
+    			spend.set(item.name, item.value);
+    		});
+    		
+    		thisView = this;
+    		spend.save(null, {
+    			success: function(obj) {
+    				console.log("success saved spend.");
+    				//1. close dialog
+    				thisView.dayView.collection.add(spend);
+    				$("#spendDialog").modal('hide');
+    				//2. notification to update the dayView(dayView listenTo)
+    			},
+    			error: function(obj, error) {
+    				console.log("error occred while saving.");
+    				$("#error-message").html("Error occred while saving.<br />Code: "+error.code+"<br />Message: "+error.message);
+    				$("#error-message").show();
+    				console.log(error);
+    			}
+    		});
     	}
     },
 
