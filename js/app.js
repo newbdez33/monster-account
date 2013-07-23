@@ -61,6 +61,16 @@ app.Router = Backbone.Router.extend({
                 }
             });
 
+            app.categories = new app.CategoryCollection();
+            app.categories.fetch({
+                success: function(collection) {
+                    console.log("categories retrieved."+collection.length);
+                },
+                error: function(collection, err) {
+                    console.warn("Retrieving tab collection error");
+                }
+            });
+
         }else {
             console.log("resusing LayoutView");
             app.layoutView.delegateEvents();

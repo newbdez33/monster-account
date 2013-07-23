@@ -46,3 +46,28 @@ app.SpendCollection = Parse.Collection.extend({
         Parse.Collection.prototype.fetch.apply(this, arguments);
     }
 });
+
+app.Category = Parse.Object.extend({
+
+    className: "category",
+
+    defaults: function() {
+        return {
+            name : "",
+            count : 0
+        }
+    }
+});
+
+app.CategoryCollection = Parse.Collection.extend({
+    model: app.Category,
+    fetch: function (options) {
+        this.query = new Parse.Query(app.Category).descending("count").limit(10);  //only get first 10 items
+        Parse.Collection.prototype.fetch.apply(this, arguments);
+    },
+
+    countOne: function (name) {
+        console.log("count one:"+ name);
+        //TODO filter all and count category then save
+    }
+});

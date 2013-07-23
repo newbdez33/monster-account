@@ -1,3 +1,26 @@
+app.CategoryView = Backbone.View.extend({
+    el: $("#selectCategory"),
+
+    template: _.template($('#category-item-template').html()),
+
+    events: {
+        "click li": "selected",
+    },
+
+    initialize: function(options) {
+        this.collection = options.collection;
+    },
+
+    render: function() {
+        this.$el.html(this.template({categories:this.collection.toJSON()}));
+        return this;
+    },
+
+    selected: function(e) {
+        this.trigger("onSelected", $(e.target).html());
+    }
+});
+
 app.SpendDialogView = Backbone.View.extend({
 	el: $("#spendDialog"),
 
@@ -14,14 +37,22 @@ app.SpendDialogView = Backbone.View.extend({
     	this.deleteButton = this.$("#deleteSpendButton");
     	this.titleLabel = this.$("#spend-dialog-title");
     	this.spendForm = this.$("#spendForm");
+        this.categoryField = this.$("#category");
 
     	//set spend text field number only
     	this.spendForm.find("#spend").numeric({ decimal: false, negative: false});
+
+        this.categoryView = new app.CategoryView({collection:app.categories});
+        this.listenTo(this.categoryView, 'onSelected', this.onSelectedCategory);
     },
 
+    onSelectedCategory: function (e) {
+        this.categoryField.val(e);
+    }, 
+
     presentDailySpendModelDialog: function (mode) {
-        
-        this.$("#error-message-box").hide();
+
+        this.categoryView.render();
         if (mode==app.dialogModeEdit) {
         	this.prepareForEditMode();
         }else {
@@ -42,6 +73,7 @@ app.SpendDialogView = Backbone.View.extend({
 
     	this.spendForm.find("#id").remove();
     	this.spendForm.find("#date").val(this_date);
+
     },
 
     prepareForEditMode: function () {
@@ -53,8 +85,6 @@ app.SpendDialogView = Backbone.View.extend({
     dialogShown: function () {
     	this.spendForm.find("#spend").focus();
     },
-
-
 
     saveAction: function () {
 
@@ -77,11 +107,10 @@ app.SpendDialogView = Backbone.View.extend({
     		thisView = this;
     		spend.save(null, {
     			success: function(obj) {
-    				console.log("success saved spend.");
-    				//1. close dialog
+    				console.log(spend);
     				thisView.dayView.collection.add(spend);
+                    app.categories.countOne(spend.get("category"));
     				$("#spendDialog").modal('hide');
-    				//2. notification to update the dayView(dayView listenTo)
     			},
     			error: function(obj, error) {
     				console.log("error occred while saving.");
