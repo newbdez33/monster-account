@@ -69,5 +69,22 @@ app.CategoryCollection = Parse.Collection.extend({
     countOne: function (name) {
         console.log("count one:"+ name);
         //TODO filter all and count category then save
+        var matched = this.find(function(item) { return item.get('name')==name });
+        if (matched) {
+            matched.set("count", matched.get("count")+1);
+        }else {
+            matched = new app.Category();
+            matched.set("name", name);
+            matched.set("count", 1);
+            this.add(matched);
+        }
+        matched.save(null, {
+                success: function(obj) {
+                    console.log(obj);
+                },
+                error: function(obj, error) {
+                    console.warn(error);
+                }
+        });
     }
 });
