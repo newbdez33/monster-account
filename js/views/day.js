@@ -13,17 +13,18 @@ app.DayView = Backbone.View.extend({
     	this.date = options.date;
         this.collection = new app.SpendCollection(options.items);
         this.listenTo(this.collection, 'add', this.render);
+        this.listenTo(this.collection, 'remove', this.render);
     },
 
     render: function () {
-
     	var total = 0;
     	var spendViews = [];
         var items = this.collection.toJSON();
+        var _this = this;
     	_.each(items, function(item) {
     		total += item.spend;
             var spendModel = new app.Spend(item);
-    		spendViews.push(new app.SpendView({model: spendModel}));
+    		spendViews.push(new app.SpendView({model: spendModel, dayView:_this}));
     	});
 
     	this.$el.html(this.template({date:this.date, day_spend:total}));

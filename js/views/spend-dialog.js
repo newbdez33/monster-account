@@ -27,6 +27,7 @@ app.SpendDialogView = Backbone.View.extend({
 	events: {
 		"shown": "dialogShown",
 		"click #saveSpendButton": "saveAction",
+        "click #deleteSpendButton": "deleteAction",
 	},
 
     initialize: function (options) {
@@ -38,6 +39,8 @@ app.SpendDialogView = Backbone.View.extend({
     	this.titleLabel = this.$("#spend-dialog-title");
     	this.spendForm = this.$("#spendForm");
         this.categoryField = this.$("#category");
+        this.spendField = this.$("#spend");
+        this.memoField = this.$("#memo");
 
     	//set spend text field number only
     	this.spendForm.find("#spend").numeric({ decimal: false, negative: false});
@@ -78,12 +81,32 @@ app.SpendDialogView = Backbone.View.extend({
 
     prepareForEditMode: function () {
     	//this model
-    	this.titleLabel.html("Edit Spend");
+        var this_date = this.date.format("YYYY-MM-DD");
+        this.titleLabel.html("Edit Spend("+this_date+")");
+        this.categoryField.val(this.model.get("category"));
+        this.spendField.val(this.model.get("spend"));
+        this.memoField.val(this.model.get("memo"));
     	this.deleteButton.show();
     },
 
     dialogShown: function () {
     	this.spendForm.find("#spend").focus();
+    },
+
+    deleteAction: function () {
+
+        thisView = this;
+        console.log(this.dayView);
+        this.model.destroy({
+            success: function(obj) {
+                thisView.dayView.collection.remove(obj);
+                console.log("spend is deleted.");
+                $("#spendDialog").modal('hide');
+            },
+            error: function(obj, error) {
+                console.warn(error);
+            }
+        });
     },
 
     saveAction: function () {
