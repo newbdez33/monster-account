@@ -12,6 +12,8 @@ app.SpendView = Backbone.View.extend({
     initialize: function (options) {
     	this.dayView = options.dayView;
         this.model = options.model;
+
+        this.listenTo(this.model, 'change', this.render);
     },
 
     render: function () {

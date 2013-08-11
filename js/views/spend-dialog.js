@@ -110,7 +110,7 @@ app.SpendDialogView = Backbone.View.extend({
     },
 
     saveAction: function () {
-
+        console.log("saveAction!");
     	this.spendForm.validate({
     		rules: {
     			spend: {
@@ -121,7 +121,12 @@ app.SpendDialogView = Backbone.View.extend({
     	});
     	if(this.spendForm.valid()) {
 
-    		var spend = new app.Spend();
+    		var spend = null;
+            if (this.model) {
+                spend = this.model;
+            }else {
+                spend = new app.Spend();
+            }
     		_.each(this.spendForm.serializeArray(), function(item){
     			if(item.name=="spend") item.value = parseFloat(item.value);
     			spend.set(item.name, item.value);
@@ -131,7 +136,9 @@ app.SpendDialogView = Backbone.View.extend({
     		spend.save(null, {
     			success: function(obj) {
     				console.log(spend);
-    				thisView.dayView.collection.add(spend);
+                    if (!thisView.dayView.collection.get(spend.id)) {
+                        thisView.dayView.collection.add(spend);
+                    }
                     app.categories.countOne(spend.get("category"));
     				$("#spendDialog").modal('hide');
     			},
