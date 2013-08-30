@@ -22,28 +22,24 @@ app.CategoryView = Backbone.View.extend({
 });
 
 app.SpendDialogView = Backbone.View.extend({
-	el: $("#spendDialog"),
+    tagName: "div",
+    className: "modal hide fade",
+    tabindex: "-1",
+    role: "dialog",
+
+    template: _.template($('#spend-dialog-template').html()),
 
 	events: {
 		"shown": "dialogShown",
 		"click #saveSpendButton": "saveAction",
         "click #deleteSpendButton": "deleteAction",
+        "click #cancelSpendButton": "cancelAction",
 	},
 
     initialize: function (options) {
 
     	this.date = options.date;
     	this.dayView = options.dayView;
-
-    	this.deleteButton = this.$("#deleteSpendButton");
-    	this.titleLabel = this.$("#spend-dialog-title");
-    	this.spendForm = this.$("#spendForm");
-        this.categoryField = this.$("#category");
-        this.spendField = this.$("#spend");
-        this.memoField = this.$("#memo");
-
-    	//set spend text field number only
-    	this.spendForm.find("#spend").numeric({ decimal: false, negative: false});
 
         this.categoryView = new app.CategoryView({collection:app.categories});
         this.listenTo(this.categoryView, 'onSelected', this.onSelectedCategory);
@@ -53,7 +49,31 @@ app.SpendDialogView = Backbone.View.extend({
         this.categoryField.val(e);
     }, 
 
+    render: function() {
+
+        this.$el.html(this.template());
+
+        this.$el.attr('role', this.role);
+        this.$el.attr('tabindex', this.tabindex);
+
+        this.deleteButton = this.$("#deleteSpendButton");
+        this.titleLabel = this.$("#spend-dialog-title");
+        this.spendForm = this.$("#spendForm");
+        this.categoryField = this.$("#category");
+        this.spendField = this.$("#spend");
+        this.memoField = this.$("#memo");
+
+        //set spend text field number only
+        this.spendForm.find("#spend").numeric({ decimal: false, negative: false});
+
+        return this;
+    },
+
+
     presentDailySpendModelDialog: function (mode) {
+
+        this.render();
+        $('body').append(this.el);
 
         this.categoryView.render();
         if (mode==app.dialogModeEdit) {
@@ -63,7 +83,7 @@ app.SpendDialogView = Backbone.View.extend({
         }
 
         this.$("#error-message").hide();
-        $("#spendDialog").modal("show");
+        this.$el.modal("show");
     },
 
     prepareForAddMode: function () {
@@ -93,6 +113,10 @@ app.SpendDialogView = Backbone.View.extend({
     	this.spendForm.find("#spend").focus();
     },
 
+    cancelAction: function () {
+        this.$el.remove();
+    },
+
     deleteAction: function () {
 
         thisView = this;
@@ -101,7 +125,8 @@ app.SpendDialogView = Backbone.View.extend({
             success: function(obj) {
                 thisView.dayView.collection.remove(obj);
                 console.log("spend is deleted.");
-                $("#spendDialog").modal('hide');
+                thisView.$el.modal('hide');
+                thisView.$el.remove();
             },
             error: function(obj, error) {
                 console.warn(error);
@@ -140,7 +165,8 @@ app.SpendDialogView = Backbone.View.extend({
                         thisView.dayView.collection.add(spend);
                     }
                     app.categories.countOne(spend.get("category"));
-    				$("#spendDialog").modal('hide');
+    				thisView.$el.modal('hide');
+                    thisView.$el.remove();
     			},
     			error: function(obj, error) {
     				console.log("error occred while saving.");

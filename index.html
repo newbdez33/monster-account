@@ -18,50 +18,6 @@
 </head>
 
 <body>
-
-<!-- MODAL -->
-<div id="spendDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Spend" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="spend-dialog-title">Add Spend</h3>
-    </div>
-    <div class="modal-body">
-    <div class="alert fade in" id="error-message"></div>
-    <form id="spendForm">
-        <div class="control-group">
-            <label class="control-label" for="inputNumber">Money</label>
-            <div class="controls controls-row">
-                <input type="hidden" id="date" name="date" value="" />
-                <input type="hidden" id="id" name="id" value="" />
-                <input type="text" id="spend" name="spend" placeholder="Money" style="width:150px;">
-            </div>
-
-                <div class="input-append">
-                    <input type="text" id="category" name="category" placeholder="Category" style="width:150px;">
-                    <div class="btn-group">
-                        <button data-toggle="dropdown" class="btn dropdown-toggle">Select <span class="caret"></span></button>
-                        <ul class="dropdown-menu" id="selectCategory"></ul>
-                    </div>
-                </div>
-
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputMemo">Memo:</label>
-            <div class="controls">
-                <input type="text" id="memo" name="memo" value=""  style="width:250px;"/>
-
-            </div>
-
-        </div>
-    </form>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-danger" id="deleteSpendButton" style="float:left;">Delete this spend</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-primary" id="saveSpendButton">Save</button>
-    </div>
-</div>
-
 <div id="layoutView">
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
@@ -127,6 +83,49 @@
     <% _.each(categories, function (item) { %>
         <li><a href="#"><%= item.name %></a></li>
     <% }); %>
+</script>
+
+<!-- MODAL -->
+<script type="text/template" id="spend-dialog-template">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="spend-dialog-title">Add Spend</h3>
+    </div>
+    <div class="modal-body">
+    <div class="alert fade in" id="error-message"></div>
+    <form id="spendForm">
+        <div class="control-group">
+            <label class="control-label" for="inputNumber">Money</label>
+            <div class="controls controls-row">
+                <input type="hidden" id="date" name="date" value="" />
+                <input type="hidden" id="id" name="id" value="" />
+                <input type="text" id="spend" name="spend" placeholder="Money" style="width:150px;">
+            </div>
+
+                <div class="input-append">
+                    <input type="text" id="category" name="category" placeholder="Category" style="width:150px;">
+                    <div class="btn-group">
+                        <button data-toggle="dropdown" class="btn dropdown-toggle">Select <span class="caret"></span></button>
+                        <ul class="dropdown-menu" id="selectCategory"></ul>
+                    </div>
+                </div>
+
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputMemo">Memo:</label>
+            <div class="controls">
+                <input type="text" id="memo" name="memo" value=""  style="width:250px;"/>
+
+            </div>
+
+        </div>
+    </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" id="deleteSpendButton" style="float:left;">Delete this spend</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true" id="cancelSpendButton">Cancel</button>
+        <button class="btn btn-primary" id="saveSpendButton">Save</button>
+    </div>
 </script>
 
 <!-- IMPORT -->
