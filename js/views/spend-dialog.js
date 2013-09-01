@@ -82,6 +82,10 @@ app.SpendDialogView = Backbone.View.extend({
         this.categoryField.val(this.model.get("category"));
         this.spendField.val(this.model.get("spend"));
         this.memoField.val(this.model.get("memo"));
+
+        this.spendForm.find("#id").val(this.model.get('id'));
+        this.spendForm.find("#date").val(this_date);
+
     	this.deleteButton.show();
     },
 
