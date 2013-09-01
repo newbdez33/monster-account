@@ -1,26 +1,3 @@
-app.CategoryView = Backbone.View.extend({
-    el: $("#selectCategory"),
-
-    template: _.template($('#category-item-template').html()),
-
-    events: {
-        "click li": "selected",
-    },
-
-    initialize: function(options) {
-        this.collection = options.collection;
-    },
-
-    render: function() {
-        this.$el.html(this.template({categories:this.collection.toJSON()}));
-        return this;
-    },
-
-    selected: function(e) {
-        this.trigger("onSelected", $(e.target).html());
-    }
-});
-
 app.SpendDialogView = Backbone.View.extend({
     tagName: "div",
     className: "modal hide fade",
@@ -40,9 +17,6 @@ app.SpendDialogView = Backbone.View.extend({
 
     	this.date = options.date;
     	this.dayView = options.dayView;
-
-        this.categoryView = new app.CategoryView({collection:app.categories});
-        this.listenTo(this.categoryView, 'onSelected', this.onSelectedCategory);
     },
 
     onSelectedCategory: function (e) {
@@ -75,6 +49,8 @@ app.SpendDialogView = Backbone.View.extend({
         this.render();
         $('body').append(this.el);
 
+        this.categoryView = new app.CategoryView({collection:app.categories, el:this.$('#selectCategory')});
+        this.listenTo(this.categoryView, 'onSelected', this.onSelectedCategory);
         this.categoryView.render();
         if (mode==app.dialogModeEdit) {
         	this.prepareForEditMode();
