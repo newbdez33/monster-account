@@ -39,11 +39,18 @@ app.Spend = Parse.Object.extend({
 
 app.SpendCollection = Parse.Collection.extend({
     model: app.Spend,
+    initialize: function() {
+        //不工作，因为是Parse.Collection么？
+        this.on("change:spend", this.changeSpend, this);
+    },
     fetch: function (options) {
         //TODO localstorage cache (lastUpdated)
         console.log("fetch spend collection with month:"+options.month)
         this.query = new Parse.Query(app.Spend).startsWith("date", options.month).ascending("date");
         Parse.Collection.prototype.fetch.apply(this, arguments);
+    },
+    changeSpend: function( model, val, options) {
+        console.log("spend changed");
     }
 });
 

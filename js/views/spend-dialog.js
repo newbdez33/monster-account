@@ -128,7 +128,7 @@ app.SpendDialogView = Backbone.View.extend({
 
     		var spend = null;
             if (this.model) {
-                spend = this.model;
+                spend = this.dayView.collection.get(this.model);
             }else {
                 spend = new app.Spend();
             }
@@ -143,6 +143,8 @@ app.SpendDialogView = Backbone.View.extend({
     				console.log(spend);
                     if (!thisView.dayView.collection.get(spend.id)) {
                         thisView.dayView.collection.add(spend);
+                    }else {
+                        //Do I need to update this.model as well?
                     }
                     app.categories.countOne(spend.get("category"));
     				thisView.$el.modal('hide');

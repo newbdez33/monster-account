@@ -13,6 +13,7 @@ app.DayView = Backbone.View.extend({
     	this.date = options.date;
         this.collection = new app.SpendCollection(options.items);
         this.listenTo(this.collection, 'add', this.render);
+        this.listenTo(this.collection, 'change', this.render);
         this.listenTo(this.collection, 'remove', this.render);
     },
 
