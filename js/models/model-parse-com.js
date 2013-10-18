@@ -34,6 +34,9 @@ app.MonthCollection = Parse.Collection.extend({
         //TODO This logic is sucks!! @model cannot call a outer variable, please refine it.
         var total = app.activeSpendCollection.sumSpends();
         console.log("sum:"+total);
+
+        if (monthObj.get('spend')== total) { return; };
+
         monthObj.set("spend", total);
 
         monthObj.save(null, {

@@ -41,55 +41,53 @@ app.Router = Backbone.Router.extend({
     },
 
     initialize: function () {
-        //
+        app.layoutView = new app.LayoutView();
+        app.activeSpendCollection = new app.SpendCollection();
+        app.monthes = new app.MonthCollection();
     },
 
     home: function () {
 
+        //app.layoutView.delegateEvents();
+
         console.log("Route: HOME");
-        if (!app.layoutView) {
+        
+        app.monthes.fetch({
+            success: function(collection) {
+                app.checkAndFixThisMonthTab();  //check if this month is existing
 
-            app.layoutView = new app.LayoutView();
+                //After fetch monthes data, we route to MAIN view
+                app.layoutView.selectMenuItem('home-menu');
 
-            app.activeSpendCollection = new app.SpendCollection();
+                app.tabbedContainer = new app.TabbedContainer();
+                app.layoutView.$("#content").html(app.tabbedContainer.render().el);
+            },
+            error: function(collection, err) {
+                console.warn("Retrieving tab collection error");
+            }
+        });
 
-            app.monthes = new app.MonthCollection();
-            app.monthes.fetch({
-                success: function(collection) {
-                    app.checkAndFixThisMonthTab();  //check if this month is existing
+        app.categories = new app.CategoryCollection();
+        app.categories.fetch({
+            success: function(collection) {
+                //console.log("categories retrieved."+collection.length);
+            },
+            error: function(collection, err) {
+                console.warn("Retrieving tab collection error");
+            }
+        });
 
-                    //After fetch monthes data, we route to MAIN view
-                    app.layoutView.selectMenuItem('home-menu');
-
-                    app.tabbedContainer = new app.TabbedContainer();
-                    app.layoutView.$("#content").append(app.tabbedContainer.render().el);
-                },
-                error: function(collection, err) {
-                    console.warn("Retrieving tab collection error");
-                }
-            });
-
-            app.categories = new app.CategoryCollection();
-            app.categories.fetch({
-                success: function(collection) {
-                    //console.log("categories retrieved."+collection.length);
-                },
-                error: function(collection, err) {
-                    console.warn("Retrieving tab collection error");
-                }
-            });
-
-        }else {
-            console.log("resusing LayoutView");
-            app.layoutView.delegateEvents();
-        }
         
     },
 
     chart: function(type) {
+
         console.log("Route: CHART("+type+")");
+
         app.layoutView.selectMenuItem('chart-menu');
-        app.layoutView.$("#content").html('');
+        app.chartView = new app.ChartView({type: type});
+        app.layoutView.$("#content").html(app.chartView.render().el);
+
     },
 
     settings: function() {
