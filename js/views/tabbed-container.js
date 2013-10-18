@@ -11,10 +11,9 @@ app.TabbedContainer = Backbone.View.extend({
 
 	initialize: function () {
         
-        this.listenTo(app.monthes, 'all', this.render);
-        this.listenTo(app.monthes, 'add', this.addOne);
-
-        this.spendCollection = new app.SpendCollection();
+        //this.listenTo(app.monthes, 'all', this.render);
+        //this.listenTo(app.monthes, 'add', this.monthSpendUpdated);
+        this.listenTo(app.monthes, 'change', this.monthSpendUpdated);
 
     },
 
@@ -38,17 +37,16 @@ app.TabbedContainer = Backbone.View.extend({
 
         //fetch days collection for active month
         var active_month = this.$('li.active').last().attr("date");
-        console.log("active month:"+active_month);
 
         //fetch spend data
         var thisView = this;
-        this.spendCollection.fetch({
+        app.activeSpendCollection.fetch({
             month:active_month, 
             success: function(collection) {
                 thisView.renderDays(active_month);
             },
             error: function (collection, error) {
-                console.warn("fetch spendCollection failed.");
+                console.warn("fetch app.activeSpendCollection failed.");
             }
         });
 
@@ -57,7 +55,7 @@ app.TabbedContainer = Backbone.View.extend({
 
     renderDays: function (active_month) {
 
-        console.log("fetched:"+this.spendCollection.length+" rows");
+        //console.log("fetched:"+app.activeSpendCollection.length+" rows");
 
         //fill content of days
         var month_start_date = moment(active_month + "-01", "YYYY-MM-DD");
@@ -70,20 +68,20 @@ app.TabbedContainer = Backbone.View.extend({
         }
         
         //console.log("start:"+month_start_date.format("YYYY-MM-DD")+", end:"+month_end_date.format("YYYY-MM-DD"));
+        //GET ALL THIS MONTH DAY DATA
         for (var i = 0; i <= 31; i++) {
             var next_day = month_start_date.clone();
             next_day.add("days", i);
             if (next_day.isAfter(month_end_date)) { break; }
 
             var data = null;
-            if(this.spendCollection.length>0) {
+            if(app.activeSpendCollection.length>0) {
                 var filter_date = next_day.format("YYYY-MM-DD");
-                //data = this.spendCollection.where({date: filter_date});
-                data = this.spendCollection.filter(function(item){
+                data = app.activeSpendCollection.filter(function(item){
                     return item.get("date") == filter_date;
                 });
             }
-            //console.log(data);
+            
             var dayView = new app.DayView({items:data, date:next_day});
             this.tab_content.append(dayView.render().el);
         };
@@ -96,12 +94,13 @@ app.TabbedContainer = Backbone.View.extend({
 
         var target = $(event.currentTarget);
         target.addClass("active");
-        
+
         this.render();
     },
 
-    addOne: function () {
-        console.log("add One");
+    monthSpendUpdated: function(model) {
+        var month_total = model.get('spend');
+        this.$('li.active span').html(month_total);
     }
 
 });

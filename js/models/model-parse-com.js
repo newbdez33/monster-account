@@ -20,6 +20,23 @@ app.MonthCollection = Parse.Collection.extend({
         //TODO localstorage cache (lastUpdated)
         this.query = new Parse.Query(app.Month).ascending("date");
         Parse.Collection.prototype.fetch.apply(this, arguments);
+    },
+
+    updateMonth: function (spendObj /* model */, diffSpend) {
+        
+        var m = moment(spendObj.get("date")).format("YYYY-MM");
+
+        //console.log("TODO: 找到month,更新:"+ m + " spend:"+diffSpend);
+        var monthObj = this.find(function(item){
+            return item.get("date") === m;
+        });
+
+        console.log("GOT:"+monthObj.get("date"));
+
+        //TODO This logic is sucks!! @model cannot call a outer variable, please refine it.
+        var total = app.tabbedContainer.spendCollection.sumSpends();
+        console.log("sum:"+total);
+        monthObj.set("spend", total);
     }
 });
 
@@ -40,8 +57,9 @@ app.Spend = Parse.Object.extend({
 app.SpendCollection = Parse.Collection.extend({
     model: app.Spend,
     initialize: function() {
-        //不工作，因为是Parse.Collection么？
         this.on("change:spend", this.changeSpend, this);
+        this.on("add", this.addSpend, this);
+        this.on("remove", this.removeSpend, this);
     },
     fetch: function (options) {
         //TODO localstorage cache (lastUpdated)
@@ -50,7 +68,27 @@ app.SpendCollection = Parse.Collection.extend({
         Parse.Collection.prototype.fetch.apply(this, arguments);
     },
     changeSpend: function( model, val, options) {
-        console.log("spend changed");
+        console.log("Spend changed");
+        //update month data
+        app.monthes.updateMonth(model, model.get('spend') - model.previous('spend'));
+    },
+    addSpend: function ( model ) {
+        console.log("Spend added");
+        //update month data
+        app.monthes.updateMonth(model, model.get('spend'));
+    },
+    removeSpend: function ( model ) {
+        console.log("Spend removed");
+        //update month data
+        app.monthes.updateMonth(model, -model.get('spend'));  
+    },
+    sumSpends: function () {
+        var total = 0;
+        this.each(function(item){
+            total += item.get('spend');
+        });
+
+        return total;
     }
 });
 

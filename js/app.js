@@ -51,10 +51,18 @@ app.Router = Backbone.Router.extend({
 
             app.layoutView = new app.LayoutView();
 
+            app.activeSpendCollection = new app.SpendCollection();
+            
             app.monthes = new app.MonthCollection();
             app.monthes.fetch({
                 success: function(collection) {
                     app.checkAndFixThisMonthTab();  //check if this month is existing
+
+                    //After fetch monthes data, we route to MAIN view
+                    app.layoutView.selectMenuItem('home-menu');
+
+                    app.tabbedContainer = new app.TabbedContainer();
+                    app.layoutView.$("#content").append(app.tabbedContainer.render().el);
                 },
                 error: function(collection, err) {
                     console.warn("Retrieving tab collection error");
@@ -75,11 +83,6 @@ app.Router = Backbone.Router.extend({
             console.log("resusing LayoutView");
             app.layoutView.delegateEvents();
         }
-
-        app.layoutView.selectMenuItem('home-menu');
-
-        app.tabbedContainer = new app.TabbedContainer();
-        app.layoutView.$("#content").append(app.tabbedContainer.render().el);
         
     },
 

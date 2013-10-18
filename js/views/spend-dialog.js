@@ -14,9 +14,7 @@ app.SpendDialogView = Backbone.View.extend({
 	},
 
     initialize: function (options) {
-
     	this.date = options.date;
-    	this.dayView = options.dayView;
     },
 
     onSelectedCategory: function (e) {
@@ -100,13 +98,13 @@ app.SpendDialogView = Backbone.View.extend({
     deleteAction: function () {
 
         thisView = this;
-        console.log(this.dayView);
         this.model.destroy({
             success: function(obj) {
-                thisView.dayView.collection.remove(obj);
+                app.activeSpendCollection.remove(obj);
                 console.log("spend is deleted.");
                 thisView.$el.modal('hide');
                 thisView.$el.remove();
+                thisView.render();
             },
             error: function(obj, error) {
                 console.warn(error);
@@ -128,24 +126,38 @@ app.SpendDialogView = Backbone.View.extend({
 
     		var spend = null;
             if (this.model) {
-                spend = this.dayView.collection.get(this.model);
+                spend = activeSpendCollection.get(this.model.id);
+
+                _.each(this.spendForm.serializeArray(), function(item){
+                    if(item.name=="spend") {
+                        item.value = parseFloat(item.value);
+                        spend.set(item.name, item.value);
+                        return;
+                    }
+                });
             }else {
                 spend = new app.Spend();
+                _.each(this.spendForm.serializeArray(), function(item){
+                    if(item.name=="spend") {
+                        item.value = parseFloat(item.value);
+                    }
+                    spend.set(item.name, item.value);
+                });
             }
-    		_.each(this.spendForm.serializeArray(), function(item){
-    			if(item.name=="spend") item.value = parseFloat(item.value);
-    			spend.set(item.name, item.value);
-    		});
+
     		
     		thisView = this;
     		spend.save(null, {
     			success: function(obj) {
+
     				console.log(spend);
-                    if (!thisView.dayView.collection.get(spend.id)) {
-                        thisView.dayView.collection.add(spend);
+                    if (!app.activeSpendCollection.get(spend.id)) {
+                        app.activeSpendCollection.add(spend);
                     }else {
                         //Do I need to update this.model as well?
                     }
+
+                    //update category dta
                     app.categories.countOne(spend.get("category"));
     				thisView.$el.modal('hide');
                     thisView.$el.remove();
