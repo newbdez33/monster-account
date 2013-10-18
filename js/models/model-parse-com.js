@@ -34,7 +34,7 @@ app.MonthCollection = Parse.Collection.extend({
         console.log("GOT:"+monthObj.get("date"));
 
         //TODO This logic is sucks!! @model cannot call a outer variable, please refine it.
-        var total = app.tabbedContainer.spendCollection.sumSpends();
+        var total = app.activeSpendCollection.sumSpends();
         console.log("sum:"+total);
         monthObj.set("spend", total);
     }

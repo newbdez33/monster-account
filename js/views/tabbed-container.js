@@ -73,16 +73,8 @@ app.TabbedContainer = Backbone.View.extend({
             var next_day = month_start_date.clone();
             next_day.add("days", i);
             if (next_day.isAfter(month_end_date)) { break; }
-
-            var data = null;
-            if(app.activeSpendCollection.length>0) {
-                var filter_date = next_day.format("YYYY-MM-DD");
-                data = app.activeSpendCollection.filter(function(item){
-                    return item.get("date") == filter_date;
-                });
-            }
             
-            var dayView = new app.DayView({items:data, date:next_day});
+            var dayView = new app.DayView({date:next_day});
             this.tab_content.append(dayView.render().el);
         };
     },

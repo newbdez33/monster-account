@@ -15,6 +15,8 @@ app.SpendDialogView = Backbone.View.extend({
 
     initialize: function (options) {
     	this.date = options.date;
+        console.log(options.dayView);
+        this.dayView = options.dayView;
     },
 
     onSelectedCategory: function (e) {
@@ -104,7 +106,8 @@ app.SpendDialogView = Backbone.View.extend({
                 console.log("spend is deleted.");
                 thisView.$el.modal('hide');
                 thisView.$el.remove();
-                thisView.render();
+
+                thisView.dayView.render();
             },
             error: function(obj, error) {
                 console.warn(error);
@@ -126,7 +129,7 @@ app.SpendDialogView = Backbone.View.extend({
 
     		var spend = null;
             if (this.model) {
-                spend = activeSpendCollection.get(this.model.id);
+                spend = app.activeSpendCollection.get(this.model.id);
 
                 _.each(this.spendForm.serializeArray(), function(item){
                     if(item.name=="spend") {
@@ -161,6 +164,8 @@ app.SpendDialogView = Backbone.View.extend({
                     app.categories.countOne(spend.get("category"));
     				thisView.$el.modal('hide');
                     thisView.$el.remove();
+
+                    thisView.dayView.render();
     			},
     			error: function(obj, error) {
     				console.log("error occred while saving.");

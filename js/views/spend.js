@@ -11,6 +11,7 @@ app.SpendView = Backbone.View.extend({
 
     initialize: function (options) {
         this.model = options.model;
+        this.dayView = options.dayView;
         this.listenTo(this.model, 'change', this.render);
     },
 
@@ -20,7 +21,7 @@ app.SpendView = Backbone.View.extend({
     },
 
     clicked: function() {
-        var dialog = new app.SpendDialogView({date:moment(this.model.get("date")), model:this.model});
+        var dialog = new app.SpendDialogView({date:moment(this.model.get("date")), model:this.model, dayView: this.dayView});
         dialog.presentDailySpendModelDialog(app.dialogModeEdit);
     }
 

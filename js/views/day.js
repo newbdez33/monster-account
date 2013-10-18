@@ -10,10 +10,24 @@ app.DayView = Backbone.View.extend({
 
     initialize: function (options) {
     	this.date = options.date;
-        this.items = options.items;
+        this.items = null;
+    },
+
+    prepareData: function () {
+
+        var data = null;
+        if(app.activeSpendCollection.length>0) {
+            var filter_date = this.date.format("YYYY-MM-DD");
+            data = app.activeSpendCollection.filter(function(item){
+                return item.get("date") == filter_date;
+            });
+        }
+        this.items = data;
     },
 
     render: function () {
+
+        this.prepareData();
 
     	var total = 0;
     	var spendViews = [];
@@ -22,7 +36,7 @@ app.DayView = Backbone.View.extend({
         //console.log(this.date.format("YYYY-MM-DD"));
     	_.each(this.items, function(item) {
     		total += item.get('spend');
-    		spendViews.push(new app.SpendView({model: item}));
+    		spendViews.push(new app.SpendView({model: item, dayView: _this}));
     	});
 
     	this.$el.html(this.template({date:this.date, day_spend:total}));
@@ -35,7 +49,7 @@ app.DayView = Backbone.View.extend({
     },
 
     addDailySpent: function () {
-        var dialog = new app.SpendDialogView({date:this.date});
+        var dialog = new app.SpendDialogView({date:this.date, dayView: this});
         dialog.presentDailySpendModelDialog(app.dialogModeAdd);
     },
 
