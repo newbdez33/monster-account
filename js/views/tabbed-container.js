@@ -44,6 +44,7 @@ app.TabbedContainer = Backbone.View.extend({
             month:active_month, 
             success: function(collection) {
                 thisView.renderDays(active_month);
+                app.monthes.updateMonth(active_month);
             },
             error: function (collection, error) {
                 console.warn("fetch app.activeSpendCollection failed.");

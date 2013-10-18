@@ -22,9 +22,7 @@ app.MonthCollection = Parse.Collection.extend({
         Parse.Collection.prototype.fetch.apply(this, arguments);
     },
 
-    updateMonth: function (spendObj /* model */, diffSpend) {
-        
-        var m = moment(spendObj.get("date")).format("YYYY-MM");
+    updateMonth: function (m /* month date string */) {
 
         //console.log("TODO: 找到month,更新:"+ m + " spend:"+diffSpend);
         var monthObj = this.find(function(item){
@@ -37,6 +35,18 @@ app.MonthCollection = Parse.Collection.extend({
         var total = app.activeSpendCollection.sumSpends();
         console.log("sum:"+total);
         monthObj.set("spend", total);
+
+        monthObj.save(null, {
+            success: function(obj) {
+                //
+            },
+            error: function(obj, error) {
+                console.log("error occred while saving.");
+                $("#error-message").html("Error occred while saving.<br />Code: "+error.code+"<br />Message: "+error.message);
+                $("#error-message").show();
+                console.log(error);
+            }
+        });
     }
 });
 
@@ -70,17 +80,20 @@ app.SpendCollection = Parse.Collection.extend({
     changeSpend: function( model, val, options) {
         console.log("Spend changed");
         //update month data
-        app.monthes.updateMonth(model, model.get('spend') - model.previous('spend'));
+        var m = moment(model.get("date")).format("YYYY-MM");
+        app.monthes.updateMonth(m);
     },
     addSpend: function ( model ) {
         console.log("Spend added");
         //update month data
-        app.monthes.updateMonth(model, model.get('spend'));
+        var m = moment(model.get("date")).format("YYYY-MM");
+        app.monthes.updateMonth(m);
     },
     removeSpend: function ( model ) {
         console.log("Spend removed");
         //update month data
-        app.monthes.updateMonth(model, -model.get('spend'));  
+        var m = moment(model.get("date")).format("YYYY-MM");
+        app.monthes.updateMonth(m);
     },
     sumSpends: function () {
         var total = 0;
