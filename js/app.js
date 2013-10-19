@@ -87,6 +87,7 @@ app.Router = Backbone.Router.extend({
         app.layoutView.selectMenuItem('chart-menu');
         app.chartView = new app.ChartView({type: type});
         app.layoutView.$("#content").html(app.chartView.render().el);
+        app.chartView.draw();
 
     },
 
