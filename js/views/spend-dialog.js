@@ -134,9 +134,8 @@ app.SpendDialogView = Backbone.View.extend({
                 _.each(this.spendForm.serializeArray(), function(item){
                     if(item.name=="spend") {
                         item.value = parseFloat(item.value);
-                        spend.set(item.name, item.value);
-                        return;
                     }
+                    spend.set(item.name, item.value);
                 });
             }else {
                 spend = new app.Spend();
