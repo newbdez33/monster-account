@@ -72,7 +72,6 @@ app.ChartView = Backbone.View.extend({
         var categories = {};
         var total = 0;
         app.activeSpendCollection.each(function (item) {
-            console.log(this);
             var c = item.get('category');
             if ( typeof categories[c] === 'undefined') {
                 categories[c] = 0;
@@ -87,8 +86,6 @@ app.ChartView = Backbone.View.extend({
         });
 
         options.series.push({ type:'pie', name:'spends', data: series });
-        console.log(options.series);
-        console.log(options);
         chart = new Highcharts.Chart(options);
         chart.redraw();
 

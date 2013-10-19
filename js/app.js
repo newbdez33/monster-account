@@ -7,6 +7,7 @@
 var app = {
     views: {},
     models: {},
+    spends: {}, //all fetched spends by month
 
     /* static variables */
     dialogModeAdd: "dialogModeAdd",
@@ -30,6 +31,52 @@ var app = {
         console.log("Current Month Tab created.");
 
     },
+
+    fetchCategories: function () {
+
+        //TODO Cache!!
+        
+        app.categories = new app.CategoryCollection();
+        app.categories.fetch({
+            success: function(collection) {
+                //console.log("categories retrieved."+collection.length);
+            },
+            error: function(collection, err) {
+                console.warn("Retrieving tab collection error");
+            }
+        });
+    },
+
+    fetchMonthes: function (successHandler) {
+
+        //TODO Cache!!
+
+        app.monthes.fetch({
+            success: function(collection) {
+                app.checkAndFixThisMonthTab();  //check if this month is existing
+                successHandler();
+            },
+            error: function(collection, err) {
+                console.warn("Retrieving tab collection error");
+            }
+        });
+    },
+
+    fetchSpendsByMonth: function (active_month, successHandler) {
+
+        //TODO Cache!!
+
+        app.activeSpendCollection.fetch({
+            month:active_month, 
+            success: function(collection) {
+                successHandler(active_month);
+            },
+            error: function (collection, error) {
+                console.warn("fetch app.activeSpendCollection failed.");
+            }
+        });
+    },
+
 };
 
 app.Router = Backbone.Router.extend({
@@ -41,42 +88,25 @@ app.Router = Backbone.Router.extend({
     },
 
     initialize: function () {
+
         app.layoutView = new app.LayoutView();
         app.activeSpendCollection = new app.SpendCollection();
         app.monthes = new app.MonthCollection();
+
+        app.fetchCategories();
     },
 
     home: function () {
 
         //app.layoutView.delegateEvents();
-
         console.log("Route: HOME");
-        
-        app.monthes.fetch({
-            success: function(collection) {
-                app.checkAndFixThisMonthTab();  //check if this month is existing
 
-                //After fetch monthes data, we route to MAIN view
-                app.layoutView.selectMenuItem('home-menu');
-
-                app.tabbedContainer = new app.TabbedContainer();
-                app.layoutView.$("#content").html(app.tabbedContainer.render().el);
-            },
-            error: function(collection, err) {
-                console.warn("Retrieving tab collection error");
-            }
+        app.fetchMonthes(function (){
+            //After fetch monthes data, we route to MAIN view
+            app.layoutView.selectMenuItem('home-menu');
+            app.tabbedContainer = new app.TabbedContainer();
+            app.layoutView.$("#content").html(app.tabbedContainer.render().el);
         });
-
-        app.categories = new app.CategoryCollection();
-        app.categories.fetch({
-            success: function(collection) {
-                //console.log("categories retrieved."+collection.length);
-            },
-            error: function(collection, err) {
-                console.warn("Retrieving tab collection error");
-            }
-        });
-
         
     },
 
@@ -84,10 +114,13 @@ app.Router = Backbone.Router.extend({
 
         console.log("Route: CHART("+type+")");
 
-        app.layoutView.selectMenuItem('chart-menu');
-        app.chartView = new app.ChartView({type: type});
-        app.layoutView.$("#content").html(app.chartView.render().el);
-        app.chartView.draw();
+        var active_month = (new moment()).format("YYYY-MM");
+        app.fetchSpendsByMonth(active_month, function(){
+            app.layoutView.selectMenuItem('chart-menu');
+            app.chartView = new app.ChartView({type: type});
+            app.layoutView.$("#content").html(app.chartView.render().el);
+            app.chartView.draw();
+        });
 
     },
 
