@@ -2,16 +2,43 @@
  * Salmon Account
  * Version 0.1.1
  *
- * https://github.com/jeromegn/Backbone.localStorage
+ * TODO https://github.com/jeromegn/Backbone.localStorage cache
  */
 var app = {
     views: {},
     models: {},
     spends: {}, //all fetched spends by month
+    currentUser: null,
 
     /* static variables */
     dialogModeAdd: "dialogModeAdd",
     dialogModeEdit: "dialogModeEdit",
+
+    checkCurrentUser: function () {
+        this.currentUser = Parse.User.current();
+        if (this.currentUser!=null) {
+            // do stuff with the user
+            console.log("Got user from cache.");
+        } else {
+            // show the signup or login page
+            console.log("No Cached user found, signup");
+
+            var uuid = guid();
+            var user = new Parse.User();
+            user.set("username", "guest-"+uuid);
+            user.set("password", uuid);
+            user.signUp(null, {
+                success: function(user) {
+                    // Hooray! Let them use the app now.
+                    this.currentUser = user;
+                },
+                error: function(user, error) {
+                    // Show the error message somewhere and let the user try again.
+                    console.log("Error: " + error.code + " " + error.message);
+                }
+            });
+        }
+    },
 
     checkAndFixThisMonthTab: function () {
 
@@ -35,7 +62,7 @@ var app = {
     fetchCategories: function () {
 
         //TODO Cache!!
-        
+
         app.categories = new app.CategoryCollection();
         app.categories.fetch({
             success: function(collection) {
@@ -94,6 +121,7 @@ app.Router = Backbone.Router.extend({
         app.monthes = new app.MonthCollection();
 
         app.fetchCategories();
+        app.checkCurrentUser();
     },
 
     home: function () {
