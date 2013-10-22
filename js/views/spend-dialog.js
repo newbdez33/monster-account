@@ -149,6 +149,8 @@ app.SpendDialogView = Backbone.View.extend({
 
     		
     		thisView = this;
+            spend.set("user", app.currentUser);
+            spend.setACL(new Parse.ACL(app.currentUser));
     		spend.save(null, {
     			success: function(obj) {
 

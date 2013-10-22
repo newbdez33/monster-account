@@ -19,6 +19,7 @@ app.MonthCollection = Parse.Collection.extend({
     fetch: function (options) {
         //TODO localstorage cache (lastUpdated)
         this.query = new Parse.Query(app.Month).ascending("date");
+        this.query.equalTo("user", app.currentUser);
         Parse.Collection.prototype.fetch.apply(this, arguments);
     },
 
@@ -38,7 +39,8 @@ app.MonthCollection = Parse.Collection.extend({
         if (monthObj.get('spend')== total) { return; };
 
         monthObj.set("spend", total);
-
+        monthObj.set("user", app.currentUser);
+        monthObj.setACL(new Parse.ACL(app.currentUser));
         monthObj.save(null, {
             success: function(obj) {
                 //
@@ -78,6 +80,7 @@ app.SpendCollection = Parse.Collection.extend({
         //TODO localstorage cache (lastUpdated)
         console.log("fetch spend collection with month:"+options.month)
         this.query = new Parse.Query(app.Spend).startsWith("date", options.month).ascending("date");
+        this.query.equalTo("user", app.currentUser);
         Parse.Collection.prototype.fetch.apply(this, arguments);
     },
     changeSpend: function( model, val, options) {
@@ -124,6 +127,7 @@ app.CategoryCollection = Parse.Collection.extend({
     model: app.Category,
     fetch: function (options) {
         this.query = new Parse.Query(app.Category).descending("count").limit(10);  //only get first 10 items
+        this.query.equalTo("user", app.currentUser);
         Parse.Collection.prototype.fetch.apply(this, arguments);
     },
 
@@ -139,6 +143,8 @@ app.CategoryCollection = Parse.Collection.extend({
             matched.set("count", 1);
             this.add(matched);
         }
+        matched.set("user", app.currentUser);
+        matched.setACL(new Parse.ACL(app.currentUser));
         matched.save(null, {
                 success: function(obj) {
                     console.log(obj);

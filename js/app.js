@@ -54,7 +54,9 @@ var app = {
         }
 
         //create a new (current)month model instance and add to collection
-        app.monthes.create({date:current_month});
+        var m = new app.Month();
+        m.set("date", current_month);
+        app.monthes.add(m);
         console.log("Current Month Tab created.");
 
     },
