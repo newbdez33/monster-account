@@ -157,7 +157,8 @@ app.Router = Backbone.Router.extend({
     settings: function() {
         console.log("Route: SETTINGS");
         app.layoutView.selectMenuItem('settings-menu');
-        app.layoutView.$("#content").html('');
+        app.settingsView = new app.SettingsView();
+        app.layoutView.$("#content").html(app.settingsView.render().el);
     }
 
 });

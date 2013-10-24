@@ -79,15 +79,22 @@
     <span><small><%= memo %></small>, <strong>-<%= spend %></strong></span>
 </script>
 
+<script type="text/template" id="category-item-template">
+    <% _.each(categories, function (item) { %>
+        <li><a href="#"><%= item.name %></a></li>
+    <% }); %>
+</script>
+
 <script type="text/template" id="chart-template">
     <h3><%= type %>Chart</h3>
     <div id="chartContainer"></div>
 </script>
 
-<script type="text/template" id="category-item-template">
-    <% _.each(categories, function (item) { %>
-        <li><a href="#"><%= item.name %></a></li>
-    <% }); %>
+<script type="text/template" id="settings-template">
+    <h3>Settings</h3>
+    <div>
+    Current User : <%= currentUser.get('username') %>
+    </div>
 </script>
 
 <!-- MODAL -->
@@ -156,6 +163,7 @@
 <script src="js/views/day.js"></script>
 <script src="js/views/tabbed-container.js"></script>
 <script src="js/views/chart.js"></script>
+<script src="js/views/settings.js"></script>
 <script src="lib/parse-1.2.12.min.js"></script>
 <script src="js/models/model-parse-com.js"></script>
 
