@@ -1,5 +1,23 @@
 Parse.initialize("oMA4LcKxl6pHu7753B4F5bPQ4M7nMORtyJerbT4J", "hPfpey5oqDR9A3ef9vi06l7A390tp5nMhDT2pkug");
 
+app.UserController = {
+
+    current: function() {
+        var u = Parse.User.current();
+        if (u.get("username")==app.UserController.domainUserName()) {
+            return u;
+        }else {
+            return null;
+        }
+    },
+
+    domainUserName: function () {
+        var hostname = location.hostname;
+        return hostname.replace("."+appconfig.domain, "");
+    },
+
+}
+
 app.Month = Parse.Object.extend({
 
     className: "month",

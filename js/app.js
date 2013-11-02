@@ -15,7 +15,13 @@ var app = {
     dialogModeEdit: "dialogModeEdit",
 
     checkCurrentUser: function () {
-        this.currentUser = Parse.User.current();
+
+        //1.check current username is cached
+        //2.check current username is exists in backend
+        //3.signup current username
+        //4.
+
+        this.currentUser = app.UserController.current();
         if (this.currentUser!=null) {
             // do stuff with the user
             console.log("Got user from cache.");
@@ -23,10 +29,9 @@ var app = {
             // show the signup or login page
             console.log("No Cached user found, signup");
 
-            var uuid = guid();
             var user = new Parse.User();
-            user.set("username", "guest-"+uuid);
-            user.set("password", uuid);
+            user.set("username", app.UserController.domainUserName());
+            user.set("password", app.UserController.domainUserName());
             user.signUp(null, {
                 success: function(user) {
                     // Hooray! Let them use the app now.
