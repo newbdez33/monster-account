@@ -4,6 +4,9 @@ app.UserController = {
 
     current: function() {
         var u = Parse.User.current();
+        if (u==null) { 
+            return null; 
+        }
         if (u.get("username")==app.UserController.domainUserName()) {
             return u;
         }else {
