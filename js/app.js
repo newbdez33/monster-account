@@ -14,37 +14,6 @@ var app = {
     dialogModeAdd: "dialogModeAdd",
     dialogModeEdit: "dialogModeEdit",
 
-    checkCurrentUser: function () {
-
-        //1.check current username is cached
-        //2.check current username is exists in backend
-        //3.signup current username
-        //4.
-
-        this.currentUser = app.UserController.current();
-        if (this.currentUser!=null) {
-            // do stuff with the user
-            console.log("Got user from cache.");
-        } else {
-            // show the signup or login page
-            console.log("No Cached user found, signup");
-
-            var user = new Parse.User();
-            user.set("username", app.UserController.domainUserName());
-            user.set("password", app.UserController.domainUserName());
-            user.signUp(null, {
-                success: function(user) {
-                    // Hooray! Let them use the app now.
-                    this.currentUser = user;
-                },
-                error: function(user, error) {
-                    // Show the error message somewhere and let the user try again.
-                    console.log("Error: " + error.code + " " + error.message);
-                }
-            });
-        }
-    },
-
     checkAndFixThisMonthTab: function () {
 
         var current_month = moment().format("YYYY-MM");
@@ -127,8 +96,13 @@ app.Router = Backbone.Router.extend({
         app.activeSpendCollection = new app.SpendCollection();
         app.monthes = new app.MonthCollection();
 
-        app.fetchCategories();
-        app.checkCurrentUser();
+        app.UserController.fetchCurrentUser({
+            success: function() {
+                //请求user成功回调
+                console.log("user fetched.");
+                app.fetchCategories();
+            }
+        });
     },
 
     home: function () {

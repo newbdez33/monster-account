@@ -1,3 +1,4 @@
 var appconfig = {
-	domain : "jizhang.la",
+	//domain : "jizhang.la",
+	domain : "ac.com",
 }

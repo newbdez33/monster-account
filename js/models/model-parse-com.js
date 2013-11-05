@@ -2,16 +2,58 @@ Parse.initialize("oMA4LcKxl6pHu7753B4F5bPQ4M7nMORtyJerbT4J", "hPfpey5oqDR9A3ef9v
 
 app.UserController = {
 
-    current: function() {
+    fetchCurrentUser: function(options) {
+
+        var domainName = app.UserController.domainUserName();
         var u = Parse.User.current();
         if (u==null) { 
-            return null; 
-        }
-        if (u.get("username")==app.UserController.domainUserName()) {
-            return u;
+            //没有cached user，先尝试登陆
+            app.UserController.tryLogin(options, domainName);
         }else {
-            return null;
+            if (u.getUsername()==domainName) {
+                app.currentUser = u;
+                //成功回调
+                options.success.call(null);
+            }else {
+                //这种情况不应该发生
+                console.log(domainName+":"+u.get("username"));
+                Parse.User.logOut();
+                window.location.reload();
+            }
         }
+
+    },
+
+    tryLogin: function (options, domainName) {
+
+        Parse.User.logIn(domainName, domainName, {
+                success: function(login_user) {
+                    app.currentUser = login_user;
+                    //成功回调
+                    options.success.call(null);
+                },
+                error: function(login_user, error) {
+
+                    //TODO 已经被设置密码的帐号
+
+                    alert("Error: " + error.code + " " + error.message);
+
+                    var user = new Parse.User();
+                    user.set("username", domainName);
+                    user.set("password", domainName);
+                    user.signUp(null, {
+                        success: function(user) {
+                            app.currentUser = user;
+                            //成功回调
+                            options.success.call(null);
+                        },
+                        error: function(user, error) {
+                            //TODO
+                            alert("Error: " + error.code + " " + error.message);
+                        }
+                    });
+                },
+            });
     },
 
     domainUserName: function () {
