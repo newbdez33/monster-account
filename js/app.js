@@ -99,6 +99,7 @@ app.Router = Backbone.Router.extend({
         app.UserController.fetchCurrentUser({
             success: function() {
                 //请求user成功回调
+                $(document).trigger("UserReady");
                 console.log("user fetched.");
                 app.fetchCategories();
             }
@@ -109,13 +110,21 @@ app.Router = Backbone.Router.extend({
 
         //app.layoutView.delegateEvents();
         console.log("Route: HOME");
-
-        app.fetchMonthes(function (){
+        $(document).on("UserReady", function(){
+            app.fetchMonthes(function (){
             //After fetch monthes data, we route to MAIN view
             app.layoutView.selectMenuItem('home-menu');
             app.tabbedContainer = new app.TabbedContainer();
             app.layoutView.$("#content").html(app.tabbedContainer.render().el);
         });
+        });
+
+        //if user not ready
+        if (app.currentUser==null) {
+            console.log("User is not ready");
+        }else {
+            $(document).trigger("UserReady");
+        }
         
     },
 
